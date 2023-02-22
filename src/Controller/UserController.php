@@ -38,8 +38,6 @@ class UserController extends AbstractController
             );
             $user->setPassword($hashedPassword);
 
-            dd($request);
-
             $this->em->persist($user);
             $this->em->flush();
             $this->addFlash('success','Se ha registrado exitosamente');
