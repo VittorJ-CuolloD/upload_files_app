@@ -1,11 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello UserController!{% endblock %}
+{% block title %}Registrar usuario {% endblock %}
 
 {% block body %}
-
-<div class="container h-100 d-flex justify-content-center align-items-center">
-    <div class="w-50">
+<ul class="nav justify-content-end">
+  <li class="nav-item">
+    <a class="nav-link" href="/login">Iniciar sesión</a>
+  </li>
+</ul>
+<div class="container h-100 d-flex justify-content-center mt-5">
+    <div class="w-75">
         <h1 class="h3 mb-3 font-weight-normal">User register</h1>
         {{ form(formulario, {'method': 'POST'}) }}
         {% for message in app.flashes('success') %}

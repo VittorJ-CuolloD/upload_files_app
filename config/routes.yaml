@@ -8,4 +8,4 @@ kernel:
 
 user_services:
   path: /
-  controller: App\Controller\SecurityController::login
+  controller: App\Controller\SecurityController::index

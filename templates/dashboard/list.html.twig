@@ -1,16 +1,24 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello DashboardController!{% endblock %}
+{% block title %}Lista de imágenes {% endblock %}
 
 {% block body %}
+<ul class="nav justify-content-end">
+  <li class="nav-item">
+    <a class="nav-link" href="/dashboard">Subir imagen</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/logout">Cerrar sesión</a>
+  </li>
+</ul>
 
-<div class="container d-flex justify-content-center">
+<div class="container d-flex justify-content-center mt-5">
 
-<div class="w-50">
+<div class="w-100">
 <h1 class="my-5 text-center">Listado de imágenes</h1>
 	<table class="table table-bordered table-image text-center">
 		  <thead>
-		    <tr class="table-secondary">
+		    <tr>
 		      <th scope="col">ID</th>
 		      <th scope="col">IMAGEN</th>
 		      <th scope="col">FECHA</th>
@@ -20,7 +28,7 @@
 
 		    {% for files in files %}
 
-            <tr class="table-secondary">
+            <tr>
                 <td scope="row">{{ files.id }} </td>
                 <td class="w-25">
                 <img class="imagesH img-fluid w-50" src="/uploads/images/{{ files.image }}" alt="{{ files.image }}">
