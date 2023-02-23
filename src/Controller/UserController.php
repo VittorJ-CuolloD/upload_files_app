@@ -14,7 +14,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends AbstractController
 {
-
     protected $em;
 
     public function __construct(EntityManagerInterface $em)
@@ -23,14 +22,20 @@ class UserController extends AbstractController
     }
 
     #[Route('/register', name: 'app_user')]
-    public function index(Request $request,UserPasswordHasherInterface $passwordHasher): Response
+    public function index(Request $request, UserPasswordHasherInterface $passwordHasher): Response
     {
-
         $user = new User();
-        $form = $this->createForm(UserType::class,$user);
+        $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
+            $emailGetVerification = $this->em->getRepository(User::class)->findOneBy(['email' => $form['email']->getData()]);
+
+            if ($emailGetVerification != null) {
+                $this->addFlash('errorEmail', 'Email ya existe.');
+
+                return $this->redirectToRoute('app_user');
+            }
 
             $hashedPassword = $passwordHasher->hashPassword(
                 $user,
@@ -40,7 +45,7 @@ class UserController extends AbstractController
 
             $this->em->persist($user);
             $this->em->flush();
-            $this->addFlash('success','Se ha registrado exitosamente');
+            $this->addFlash('success', 'Se ha registrado exitosamente');
         }
 
         return $this->render('user/index.html.twig', [

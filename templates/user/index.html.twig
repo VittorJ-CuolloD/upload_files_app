@@ -3,13 +3,22 @@
 {% block title %}Hello UserController!{% endblock %}
 
 {% block body %}
+
 <div class="container h-100 d-flex justify-content-center align-items-center">
-    {{ form(formulario, {'method': 'POST'}) }}
-</div>
-{% for message in app.flashes('success') %}
-    <div class="flash-notice">
-        {{ message }}
+    <div class="w-50">
+        <h1 class="h3 mb-3 font-weight-normal">User register</h1>
+        {{ form(formulario, {'method': 'POST'}) }}
+        {% for message in app.flashes('success') %}
+            <div class="flash-notice alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+         {% for message in app.flashes('errorEmail') %}
+            <div class="flash-notice alert alert-danger">
+                {{ message }}
+            </div>
+        {% endfor %}
     </div>
-{% endfor %}
+</div>
 
 {% endblock %}

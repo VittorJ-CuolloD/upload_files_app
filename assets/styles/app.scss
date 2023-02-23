@@ -7,3 +7,13 @@ html,body{
 body {
     background-color: lightgray;
 }
+
+.table-image {
+    td, th {
+      vertical-align: middle;
+    }
+  }
+
+  .imagesH{
+    min-width: 80px;
+  }
