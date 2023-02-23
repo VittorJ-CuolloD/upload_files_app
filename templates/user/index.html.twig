@@ -3,9 +3,9 @@
 {% block title %}Hello UserController!{% endblock %}
 
 {% block body %}
-
-{{ form(formulario, {'method': 'POST'}) }}
-
+<div class="container h-100 d-flex justify-content-center align-items-center">
+    {{ form(formulario, {'method': 'POST'}) }}
+</div>
 {% for message in app.flashes('success') %}
     <div class="flash-notice">
         {{ message }}
