@@ -25,7 +25,9 @@
 		    </tr>
 		  </thead>
 		  <tbody>
-
+            {% if files|length == 0 %}
+                <tr><td colspan="3"><b>No hay imágenes subidas!</b></td></tr>
+            {% endif %}
 		    {% for files in files %}
 
             <tr>

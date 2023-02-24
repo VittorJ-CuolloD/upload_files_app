@@ -32,15 +32,12 @@ class DashboardController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $brochureFile = $form->get('image')->getData();
 
-            // this condition is needed because the 'brochure' field is not required
-            // so the PDF file must be processed only when a file is uploaded
             if ($brochureFile) {
                 $originalFilename = pathinfo($brochureFile->getClientOriginalName(), PATHINFO_FILENAME);
-                // this is needed to safely include the file name as part of the URL
+
                 $safeFilename = $slugger->slug($originalFilename);
                 $newFilename = $safeFilename.'-'.uniqid().'.'.$brochureFile->guessExtension();
 
-                // Move the file to the directory where brochures are stored
                 try {
                     $brochureFile->move(
                         $this->getParameter('files_directory'),
@@ -50,19 +47,15 @@ class DashboardController extends AbstractController
                     // ... handle exception if something happens during file upload
                 }
 
-                // updates the 'brochureFilename' property to store the PDF file name
-                // instead of its contents
                 $file->setImage($newFilename);
                 $file->setTitle('');
-                $file->setUserId(1);
+                $file->setUserId($this->getUser()->getId());
                 $file->setDate(new DateTime());
 
                 $this->em->persist($file);
                 $this->em->flush();
                 $this->addFlash('success', 'Imágen almacenada correctamente.');
             }
-
-            // ... persist the $product variable or any other work
 
             return $this->redirectToRoute('app_dashboard');
         }
@@ -75,11 +68,11 @@ class DashboardController extends AbstractController
     #[Route('/dashboard/list', name: 'app_dashboard_list')]
     public function listFiles(Request $request): Response
     {
-        $files = $this->em->getRepository(File::class);
+        $files = $this->em->getRepository(File::class)->findBy(['userId' => $this->getUser()->getId()]);
 
         $arrayFiles = [];
 
-        foreach ($files->findAll() as $key => $file) {
+        foreach ($files as $key => $file) {
             $arrayFiles[] = [
                 'id'=> $file->getId(),
                 'fecha'=> $file->getDate(),
