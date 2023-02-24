@@ -1,5 +1,9 @@
 <?php
-
+/**
+ *
+ * CONTROLADOR PARA LA SUBIDA DE ARCHIVOS Y VISUALIZACIÓN DE ARCHIVOS SUBIDOS POR EL USUARIO:
+ *
+ */
 namespace App\Controller;
 
 use DateTime;
@@ -30,16 +34,21 @@ class DashboardController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $brochureFile = $form->get('image')->getData();
+            //OBTENEMOS EL FICHERO ENVIADO POR REQUEST:
+            $documentFile = $form->get('image')->getData();
 
-            if ($brochureFile) {
-                $originalFilename = pathinfo($brochureFile->getClientOriginalName(), PATHINFO_FILENAME);
+            if ($documentFile) {
+                $originalFilename = pathinfo($documentFile->getClientOriginalName(), PATHINFO_FILENAME);
 
                 $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$brochureFile->guessExtension();
+
+                //GENERAMOS UN NOMBRE ALEATORIO PARA ALMACENARLO EN BD:
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$documentFile->guessExtension();
 
                 try {
-                    $brochureFile->move(
+                    //LA RUTA DE GUARDADO DE LAS IMAGENES ES LA ESPECIFICADA EN files_directory /CONFIG/SERVICES.YAML
+                    //MOVEMOS EL FICHERO A ESA RUTA:
+                    $documentFile->move(
                         $this->getParameter('files_directory'),
                         $newFilename
                     );
@@ -47,6 +56,7 @@ class DashboardController extends AbstractController
                     // ... handle exception if something happens during file upload
                 }
 
+                //ALMACENAMOS LA INFORMACIÓN RELATIVA AL FICHERO QUE SE SUBIÓ:
                 $file->setImage($newFilename);
                 $file->setTitle('');
                 $file->setUserId($this->getUser()->getId());
@@ -68,6 +78,7 @@ class DashboardController extends AbstractController
     #[Route('/dashboard/list', name: 'app_dashboard_list')]
     public function listFiles(Request $request): Response
     {
+        //REALIZAMOS UNA CONSULTA A LA TABLA FILE PARA DETERMINAR LOS FICHEROS RELACIONADOS AL USUARIO LOGEADO:
         $files = $this->em->getRepository(File::class)->findBy(['userId' => $this->getUser()->getId()]);
 
         $arrayFiles = [];
